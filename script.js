@@ -4,27 +4,18 @@ const sendbtn = document.getElementById('sendbtn');
 const newdebatebtn = document.getElementById('newdebatebtn');
 const returnmenubtn = document.getElementById('returnmenubtn');
 
-// very basic “AI” logic
-function botreply(text) {
-    text = text.toLowerCase();
-
-    const responses = [
-        "i see your point, but consider the opposite perspective.",
-        "interesting argument, yet have you thought about the consequences?",
-        "that’s valid, however it might not work in all situations.",
-        "good point, but it could be flawed if examined closely.",
-        "i agree partially, yet there’s another side to think about."
-    ];
-
-    // random response
-    const reply = responses[Math.floor(Math.random() * responses.length)];
-
-    // sometimes include part of user text
-    return `${reply} ("${text}")`;
+async function getBotReply(userText) {
+    const response = await fetch('http://localhost:3000/debate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ argument: userText })
+    });
+    const data = await response.json();
+    return data.reply.toLowerCase();
 }
 
-// send button click
-sendbtn.addEventListener('click', () => {
+// send button
+sendbtn.addEventListener('click', async () => {
     const text = userinput.value.trim();
     if (!text) return;
 
@@ -32,8 +23,9 @@ sendbtn.addEventListener('click', () => {
     usermsg.innerHTML = `<strong>you:</strong> ${text}`;
     chatarea.appendChild(usermsg);
 
+    const botReply = await getBotReply(text);
     const botmsg = document.createElement('p');
-    botmsg.innerHTML = `<strong>bot:</strong> ${botreply(text)}`;
+    botmsg.innerHTML = `<strong>bot:</strong> ${botReply}`;
     chatarea.appendChild(botmsg);
 
     userinput.value = '';
