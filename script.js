@@ -4,10 +4,23 @@ const sendbtn = document.getElementById('sendbtn');
 const newdebatebtn = document.getElementById('newdebatebtn');
 const returnmenubtn = document.getElementById('returnmenubtn');
 
-// simulated ai reply
-function botreply(usertext) {
-    let response = `hmm, interesting point about "${usertext}". here's my counter: ...`;
-    return response;
+// very basic “AI” logic
+function botreply(text) {
+    text = text.toLowerCase();
+
+    const responses = [
+        "i see your point, but consider the opposite perspective.",
+        "interesting argument, yet have you thought about the consequences?",
+        "that’s valid, however it might not work in all situations.",
+        "good point, but it could be flawed if examined closely.",
+        "i agree partially, yet there’s another side to think about."
+    ];
+
+    // random response
+    const reply = responses[Math.floor(Math.random() * responses.length)];
+
+    // sometimes include part of user text
+    return `${reply} ("${text}")`;
 }
 
 // send button click
@@ -32,7 +45,7 @@ userinput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') sendbtn.click();
 });
 
-// new debate button
+// new debate
 newdebatebtn.addEventListener('click', () => {
     chatarea.innerHTML = `<p><strong>bot:</strong> welcome to the ultimate debate. present your argument.</p>`;
 });
